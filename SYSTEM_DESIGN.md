@@ -160,7 +160,79 @@ Assume each URL record requires approximately **1 KB** of storage, including the
 
 ### 5.3 Bandwidth Estimation
 
+For a URL shortener, request and response payloads are relatively small because the redirect response does not contain the destination webpage itself.
+
+#### Redirect Traffic
+
+Assume an average redirect request + response consumes approximately 2 KB of network traffic.
+
+**Peak redirect traffic:**
+
+- ~1,160 requests/second
+- ~2 KB/request
+
+**Bandwidth:**
+
+- 1,160 x 2 KB
+- = 2.32 MB/second
+- = 18.6 Mbps
+
+#### URL Creation Traffic
+
+Assume an average URL creation request + response consumes approximately 3 KB.
+
+**Peak write traffic:**
+
+- ~12 requests/second
+- ~3 KB/request
+
+**Bandwidth:**
+
+- 12 x 3 KB
+- = 36 KB/second
+- = 0.3 Mbps
+
+#### Observation
+
+Redirect traffic dominates both request volume and bandwidth.
+
+Therefore, the primary network concern is handling approximately **19 Mbps** of peak application traffic, rather than URL creation traffic.
+
 ### 5.4 Capacity Planning
+
+At peak load, LinkForge is expected to handle approximately:
+
+- 1,160 redirect requests/second
+- 12 URL creation requests/second
+- Approximately **1,172 total requests/second**
+
+The initial deployment does not need a large distributed infrastructure to handle this scale.
+
+A reasonable starting point is:
+
+- 2 API instances for redundancy
+- PostgreSQL as the primary persistent database
+- Connection pooling between the API and PostgreSQL
+- A load balancer distributing traffic across API instances
+- Horizontal scaling available when traffic increases
+
+Assuming traffic is approximately evenly distributed:
+
+- ~586 peak requests/second per API instance
+
+This provides basic redundancy while leaving room for additional instances as traffic grows.
+
+#### Capacity Planning Principles
+
+The initial architecture should be designed so that:
+
+- API instances remain stateless
+- Additional API instances can be added horizontally
+- Database capacity can be increased independently of API capacity
+- Frequently accessed URL mappings can later be served from a cache
+- Background analytics processing can be separated from the critical redirect path
+
+> **Note:** These estimates are planning assumptions rather than benchmark results. Actual resource requirements will be validated through load testing after the MVP is implemented.
 
 ## 6. API Design
 
