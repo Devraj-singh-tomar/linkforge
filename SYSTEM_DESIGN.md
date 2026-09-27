@@ -2,11 +2,24 @@
 
 ## 1. Problem Statement
 
----
+LinkForge is a URL shortening service that converts long URLs into short, shareable links that redirect users to the original destination.
 
 ## 2. Functional Requirements
 
----
+### MVP
+
+- Create a short URL from a long URL.
+- Redirect a short URL to its original URL.
+- Support optional custom aliases.
+- Support URL expiration.
+
+### Out of Scope for MVP
+
+- User accounts
+- Advanced analytics
+- Teams
+- Billing
+- QR code generation
 
 ## 3. Non-Functional Requirements
 
